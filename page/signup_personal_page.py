@@ -13,5 +13,5 @@ class SignUpPagePersonal(BasePage):
         self.page.locator("input[name='confirmPassword']").fill(confirmPassword)
         
     
-    def next(self):
+    def next_step(self):
         self.page.locator("button[type='submit']").click()

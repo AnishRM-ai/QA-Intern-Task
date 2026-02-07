@@ -15,7 +15,7 @@ def test_presignup():
         
         personal = SignUpPagePersonal(page)
         personal.fill_personal_details("Ram", "Hero", "ram@gmail.com", "9876234312", "GothicAss1!", "GothicAss1!")
-        personal.next()
+        personal.next_step()
         
         page.wait_for_url("**/register?step=setup")
         assert "/register?step=setup" in page.url
