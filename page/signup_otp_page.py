@@ -1,5 +1,6 @@
+from .basepage import BasePage
 from playwright.sync_api import expect
-from basepage import BasePage
+
 
 class VerifyOtp(BasePage):
     def __init__(self, page):
@@ -13,5 +14,5 @@ class VerifyOtp(BasePage):
         expect(otp_field).to_have_value(code)
         
     def confirm_continue(self):
-        self.page.locator("button[name='continue']").click()
+        self.page.locator("button[type='submit']").click()
         
