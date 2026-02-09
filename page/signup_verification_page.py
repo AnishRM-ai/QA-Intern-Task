@@ -16,12 +16,35 @@ class VerificationPage(BasePage):
         
     
     def select_prefered_countries(self, country):
-        combobox = self.page.get_by_role("combobox")
+        combobox = self.page.locator("button[role='combobox']")
         combobox.click()
-        
-        #select the specific region
-        self.page.get_by_role("option", name=country, exact=True).click()
-        expect(combobox).to_contain_text(country)
+        expect(combobox).to_have_attribute("aria-expanded", "true")
+
+    # Get the radix dropdown id from aria-controls
+        dropdown_id = combobox.get_attribute("aria-controls")
+
+        # Scope everything to the actual dropdown portal
+        dropdown = self.page.locator(f"#{dropdown_id}")
+
+        search = dropdown.locator("input").first
+        expect(search).to_be_visible()
+
+        for countries in country:
+            search.fill(countries)
+
+            # Click the visible dropdown option 
+            option = dropdown.locator("div", has_text=countries).first
+            option.wait_for(state="visible")
+            option.click()
+
+            search.fill("")
+
+            chip = (
+            self.page.locator("div", has_text=countries)
+            .filter(has_not=dropdown)
+            .first
+        )
+            expect(chip).to_be_visible()
     
     
     def select_institute_type(self, institute):
@@ -32,27 +55,25 @@ class VerificationPage(BasePage):
         
     def upload_documents(self, file_path):
         if isinstance(file_path, str):
-            #single file upload
-            self.page.locator('input[type="file"]').set_input_files(file_path)
-        else:
-            #multiple files upload
-            self.page.locator('input[type="file"]').set_input_files(file_path)
+            file_path = [file_path]
             
-    # def verify_upload_success(self, file_paths):
-    #     """ Method to verify upload was successful.
-    #     """  
-    #     if isinstance(file_paths, str):
-    #         file_paths = [file_paths]
+        #file input
+        file_input = self.page.locator("input[type='file']")
+        
+        for i, file_path in enumerate(file_path):
+            file_input.nth(i).set_input_files(file_path)
             
-    #     for file_path in file_paths:
-    #         filename = os.path.basename(file_path)
             
     
     def add_documents(self, file_path):
-        add_button = self.page.locator("button[type='button']")
+        add_button = self.page.get_by_role("button", name="Add Documents")
         add_button.click()
         
-        self.upload_documents(file_path)
-    
+        # Wait for new input to appear
+        file_inputs = self.page.locator("input[type='file']")
+        new_input = file_inputs.last
+
+        new_input.set_input_files(file_path)
+        
     def final_submit(self):
         self.page.locator("button[type='submit']").click()

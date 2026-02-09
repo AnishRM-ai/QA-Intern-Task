@@ -12,13 +12,6 @@ class MailsaurHelper:
 
     def wait_for_code(self, email_add, timeout=60000):
         """Wait for verification email and extract OTP code.
-        
-        Args:
-            email_add: Email address to wait for
-            timeout: Timeout in milliseconds (default 60000 = 60 seconds)
-        
-        Returns:
-            str: The 6-digit verification code
         """
         criteria = SearchCriteria()
         criteria.sent_to = email_add
@@ -38,13 +31,12 @@ class MailsaurHelper:
         except Exception as e:
             raise Exception(f"No emails found for {email_add} within {timeout}ms: {str(e)}")
         
-        print(f"✓ Email received: {full_message.subject}")
+        print(f" Email received: {full_message.subject}")
         
         # Get HTML body
         body = full_message.html.body if full_message.html else full_message.text.body
         
-        # Extract OTP from centered paragraph with letter-spacing
-        # Pattern matches: <p style="...letter-spacing: 2px...">448455</p>
+        # Pattern match
         match = re.search(r'<p[^>]*letter-spacing[^>]*>\s*(\d{6})\s*</p>', body, re.IGNORECASE)
         
         if not match:
@@ -62,9 +54,9 @@ class MailsaurHelper:
         return code
     
     def delete_all_messages(self):
-        """Delete all messages in the server (useful for cleanup before tests)."""
+        """Delete all messages in the server."""
         try:
             self.client.messages.delete_all(self.server_id)
-            print("✓ All messages deleted")
+            print(" All messages deleted")
         except Exception as e:
-            print(f"⚠ Could not delete messages: {e}")
+            print(f" Could not delete messages: {e}")
