@@ -25,14 +25,14 @@ def test_full_signup(page, mailosaur):
     
     
     #Signup Personal Details
-    email = "alcya100-settlers@pcqiozhk.mailosaur.net"
+    email = "aqlcya100-settlers@pcqiozhk.mailosaur.net"
     
     personalDetails = SignUpPagePersonal(page)
     personalDetails.fill_personal_details(
         "Test00",
         "User",
         email,
-        "9181610022",
+        "9181690092",
         "SuperSecret1!",
         "SuperSecret1!"
     )
